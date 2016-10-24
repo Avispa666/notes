@@ -49,10 +49,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 cursor = notesDB.query(DBHelper.TABLE_NAME, null, null, null, null, null, null);
-                TextView itemFileNameText = (TextView) findViewById(R.id.itemFileNameText);
+                TextView itemFileNameText = (TextView) view.findViewById(R.id.itemFileNameText);
                 String fileName = itemFileNameText.getText().toString();
+                Log.d("filename", fileName);
                 cursor = notesDB.rawQuery("SELECT * FROM " + DBHelper.TABLE_NAME + " WHERE "  + DBHelper.FILE_NAME_COLUMN + " = '" + fileName + "'", null);
                 cursor.moveToFirst();
+                Log.d("cursor", cursor.getPosition() + " ");
                 Log.d("CURSOR", cursor.getColumnIndex(DBHelper.NOTE_NAME_COLUMN) + " #");
                 String noteName = cursor.getString(cursor.getColumnIndex(DBHelper.NOTE_NAME_COLUMN));
                 Intent editNote = new Intent(MainActivity.this, EditNoteActivity.class);
@@ -92,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
             int pos = acmi.position;
             cursor = notesDB.query(DBHelper.TABLE_NAME, null, null, null, null, null, null);
             //TODO alertdialog
+//            Toast.makeText(getApplicationContext(), pos, Toast.LENGTH_LONG).show();
             cursor.moveToPosition(pos);
             String fileName = cursor.getString(cursor.getColumnIndex(DBHelper.FILE_NAME_COLUMN));
             String path = this.getFilesDir().getPath() + "/" + fileName + "." + CreateNoteActivity.FILE_EXTENSION;

@@ -35,6 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/itemFileNameText"
-            android:visibility="gone" />
+            android:visibility="gone"
+            android:textColor="@color/white" />
     </LinearLayout>
 </FrameLayout>

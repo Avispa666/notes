@@ -67,7 +67,7 @@ public class NoteAdapter extends CursorAdapter {
                 }
 //                builder.append("\b");
                 inputStream.close();
-                itemNoteContent.setText(builder.toString());
+                itemNoteContent.setText(builder.toString() + "\n");
             }
         } catch (Throwable t) {
             // Don`t do anything
