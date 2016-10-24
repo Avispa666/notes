@@ -7,4 +7,6 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_creating_note">CreatingNoteActivity</string>
     <string name="title_activity_test">test</string>
+    <string name="title_activity_edit_note">EditNoteActivity</string>
+    <string name="title_activity_crypto">crypto</string>
 </resources>

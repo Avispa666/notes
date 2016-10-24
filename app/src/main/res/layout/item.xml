@@ -1,30 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@color/spaceGray">
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:text="name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/itemNoteName"
-                android:layout_weight="1" />
-
-        </LinearLayout>
-
         <TextView
-            android:text="content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/itemNoteContent" />
+            android:id="@+id/itemNoteName"
+            android:layout_weight="1"
+            android:editable="false"
+            android:maxLines="2"
+            android:textColorHint="@android:color/darker_gray"
+            android:textColor="@android:color/background_light"
+            android:textSize="24sp"
+            android:textStyle="normal|bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/itemNoteContent"
+            android:textSize="18sp"
+            android:maxLines="3"
+            android:textColor="@android:color/background_light"
+            android:textColorHint="@android:color/darker_gray"
+            android:layout_weight="1" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/itemFileNameText"
+            android:visibility="gone" />
     </LinearLayout>
 </FrameLayout>

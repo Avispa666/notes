@@ -9,7 +9,7 @@ import android.provider.BaseColumns;
  * Created by avispa on 16.10.2016.
  */
 
-class DBHelper extends SQLiteOpenHelper implements BaseColumns{
+public class DBHelper extends SQLiteOpenHelper implements BaseColumns{
 
     public static final String TABLE_NAME = "NOTES";
     public static final String DB_NAME = "NOTES";
@@ -23,9 +23,9 @@ class DBHelper extends SQLiteOpenHelper implements BaseColumns{
     public void onCreate(SQLiteDatabase db) {
         // создаем таблицу с полями
         db.execSQL("create table " + TABLE_NAME + " ("
-                + "id integer primary key autoincrement,"
+                + "_id integer primary key autoincrement,"
                 + FILE_NAME_COLUMN + " text,"
-                + NOTE_NAME_COLUMN + " text" + ");");
+                + NOTE_NAME_COLUMN + " text);");
     }
 
     @Override

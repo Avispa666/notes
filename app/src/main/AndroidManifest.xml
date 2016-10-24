@@ -19,8 +19,26 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".CreatingNoteActivity"
+            android:name=".CreateNoteActivity"
             android:label="@string/title_activity_creating_note"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.developers.notes.MainActivity" />
+        </activity>
+        <activity
+            android:name=".EditNoteActivity"
+            android:label="@string/title_activity_edit_note"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.developers.notes.MainActivity" />
+        </activity>
+        <activity
+            android:name=".crypto"
+            android:label="@string/title_activity_crypto"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
