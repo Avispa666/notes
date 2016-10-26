@@ -1,6 +1,8 @@
 package com.developers.notes;
 
+import android.app.AlertDialog;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -9,6 +11,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -27,11 +30,15 @@ import java.io.OutputStreamWriter;
 public class EditNoteActivity extends AppCompatActivity {
 
     public static final String FILE_EXTENSION = "note";
-    EditText noteContentText;
-    EditText noteNameText;
-    DBHelper dbHelper;
-    SQLiteDatabase notesDB;
+    private EditText noteContentText;
+    private EditText noteNameText;
+    private DBHelper dbHelper;
+    private SQLiteDatabase notesDB;
+    private File myNote;
+    private Crypto crypto;
+    private String password;
     private static String fileName;
+    private static String isEncryptionActivated;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,55 +54,91 @@ public class EditNoteActivity extends AppCompatActivity {
         Intent editNote = getIntent();
         noteNameText.setText(editNote.getStringExtra("notename"));
         fileName = editNote.getStringExtra("filename");
-        openNote(fileName);
-        //TODO get filename from database
+        isEncryptionActivated = editNote.getStringExtra("isEncryptionActivated");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (isEncryptionActivated.equals("true")) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Enter the password");
+
+// Set up the input
+            final EditText input = new EditText(this);
+// Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+            input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            builder.setView(input);
+// Set up the buttons
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    password = input.getText().toString();
+                    openNote(fileName, isEncryptionActivated);
+                }
+            });
+//        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                dialog.cancel();
+//            }
+//        });
+            builder.show();
+        } else {
+            openNote(fileName, isEncryptionActivated);
+        }
+
+
     }
 
     private void saveNote(String fileName) {
-        if (!noteNameText.getText().toString().isEmpty() && !noteContentText.toString().isEmpty()) {
-            try {
-                notesDB.execSQL("UPDATE " + DBHelper.TABLE_NAME + " SET " + DBHelper.NOTE_NAME_COLUMN +
-                        " = '" + noteNameText.getText().toString() + "' WHERE " + DBHelper.FILE_NAME_COLUMN + " = '" + fileName + "'");
+        try {
+            if (isEncryptionActivated.equals("true")) {
+                String filePath = this.getFilesDir().getPath() + "/" + fileName + "." + FILE_EXTENSION;
+                crypto = new Crypto();
+                //TODO pick password
+                crypto.execute("encrypt", filePath, password, noteContentText.getText().toString());
+            } else {
                 OutputStream outputStream = openFileOutput(fileName + "." + FILE_EXTENSION, 0);
                 OutputStreamWriter osw = new OutputStreamWriter(outputStream);
                 osw.write(noteContentText.getText().toString());
                 osw.close();
-            } catch (Throwable t) {
-                Log.d("TAG", t.toString());
-                Toast.makeText(getApplicationContext(),
-                        "Exception: " + t.toString(), Toast.LENGTH_LONG).show();
             }
-        }
-        else {
-            String path = this.getFilesDir().getPath() + "/" + fileName + "." + CreateNoteActivity.FILE_EXTENSION;
-            notesDB.execSQL("DELETE FROM " + DBHelper.TABLE_NAME + " WHERE " + DBHelper.FILE_NAME_COLUMN
-                    + " = '" + fileName + "'");
-            File myNote = new File(path);
-            myNote.delete();
+        } catch (Throwable t) {
+            Log.d("Exc in create_note", t.toString());
+//            Toast.makeText(getApplicationContext(),
+//                    "Exception: " + t.toString(), Toast.LENGTH_LONG).show();
         }
     }
 
-    private void openNote(String fileName) {
+    private void openNote(String fileName, String isEncryptionActivated) {
+        myNote = null;
         try {
-            InputStream inputStream = openFileInput(fileName + "." + FILE_EXTENSION);
+            if (isEncryptionActivated.equals("true")) {
+                String filePath = this.getFilesDir().getPath() + "/" + fileName + "." + FILE_EXTENSION;
+                //TODO get password from alert dialog
+                crypto = new Crypto();
+                crypto.execute("decrypt", filePath, password, null);
+                String text = crypto.get();
+                noteContentText.setText(text);
+            } else {
+                myNote = new File(this.getFilesDir().getPath() + "/" + fileName + "." + FILE_EXTENSION);
 
-            if (inputStream != null) {
-                InputStreamReader isr = new InputStreamReader(inputStream);
-                BufferedReader reader = new BufferedReader(isr);
-                String line;
-                StringBuilder builder = new StringBuilder();
+                InputStream inputStream = openFileInput(myNote.getName()); // replace with myNote
+                if (inputStream != null) {
+                    InputStreamReader isr = new InputStreamReader(inputStream);
+                    BufferedReader reader = new BufferedReader(isr);
+                    String line;
+                    StringBuilder builder = new StringBuilder();
 
-                while ((line = reader.readLine()) != null) {
-                    builder.append(line);
+                    while ((line = reader.readLine()) != null) {
+                        builder.append(line);
+                    }
+
+                    inputStream.close();
+                    noteContentText.setText(builder.toString());
                 }
-
-                inputStream.close();
-                noteContentText.setText(builder.toString());
             }
         } catch (Throwable t) {
             Toast.makeText(getApplicationContext(),
                     "Exception: " + t.toString(), Toast.LENGTH_LONG).show();
+            Log.d("Exc in edit_note", t.toString());
         }
     }
 

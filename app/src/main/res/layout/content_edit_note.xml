@@ -35,6 +35,8 @@
             android:id="@+id/noteContentText"
             android:textColor="@android:color/white"
             android:textColorHint="@android:color/darker_gray"
-            android:hint="Content" />
-            android:hint="Content" />
+            android:hint="Content" /><![CDATA[
+
+    android:hint="Content" />
+]]>
 </LinearLayout>

@@ -22,13 +22,13 @@ import static com.developers.notes.DBHelper.TABLE_NAME;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final int DELETE_NOTE_MENU_ITEM = 1;
-    FloatingActionButton fab;
-    ListView noteList;
-    NoteAdapter noteAdapter;
-    Cursor cursor;
-    DBHelper dbHelper;
-    SQLiteDatabase notesDB;
+//    private static final int DELETE_NOTE_MENU_ITEM = 1;
+    private FloatingActionButton fab;
+    private ListView noteList;
+    private NoteAdapter noteAdapter;
+    private Cursor cursor;
+    private DBHelper dbHelper;
+    private SQLiteDatabase notesDB;
 
 
     @Override
@@ -57,9 +57,11 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("cursor", cursor.getPosition() + " ");
                 Log.d("CURSOR", cursor.getColumnIndex(DBHelper.NOTE_NAME_COLUMN) + " #");
                 String noteName = cursor.getString(cursor.getColumnIndex(DBHelper.NOTE_NAME_COLUMN));
+                String isEncryptionActivated = cursor.getString(cursor.getColumnIndex(DBHelper.ENCRYPTION_COLUMN));
                 Intent editNote = new Intent(MainActivity.this, EditNoteActivity.class);
                 editNote.putExtra("filename", fileName);
                 editNote.putExtra("notename", noteName);
+                editNote.putExtra("isEncryptionActivated", isEncryptionActivated);
                 startActivity(editNote);
             }
         });
@@ -103,7 +105,6 @@ public class MainActivity extends AppCompatActivity {
             File myNote = new File(path);
             myNote.delete();
             updateListView();
-            Toast.makeText(getApplicationContext(), "Note was deleted", Toast.LENGTH_LONG).show();
         }
         return true;
     }

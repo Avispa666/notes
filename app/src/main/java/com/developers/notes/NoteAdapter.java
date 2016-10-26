@@ -2,6 +2,7 @@ package com.developers.notes;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,9 +23,9 @@ import static com.developers.notes.CreateNoteActivity.FILE_EXTENSION;
  */
 
 public class NoteAdapter extends CursorAdapter {
-    Context ctx;
-    LayoutInflater lInflater;
-    final String LOG_TAG = "myLogs";
+    private Context ctx;
+    private LayoutInflater lInflater;
+    private final String LOG_TAG = "myLogs";
 
     public NoteAdapter(Context context, Cursor cursor, int flags) {
         super(context, cursor, flags);
@@ -40,9 +41,15 @@ public class NoteAdapter extends CursorAdapter {
         TextView itemFileNameText = (TextView) view.findViewById(R.id.itemFileNameText);
         String noteName = cursor.getString(cursor.getColumnIndex(DBHelper.NOTE_NAME_COLUMN));
         String fileName = cursor.getString(cursor.getColumnIndex(DBHelper.FILE_NAME_COLUMN));
-        try {
-            openNote(fileName, context, itemNoteContent);
-        } catch (Exception e) {}
+        String isEncryptionActivated = cursor.getString(cursor.getColumnIndex(DBHelper.ENCRYPTION_COLUMN));
+        if (!isEncryptionActivated.equals("true")) {
+            try {
+                openNote(fileName, context, itemNoteContent);
+            } catch (Exception e) {}
+        } else {
+            itemNoteContent.setHint("<<< Encrypted >>> \n");
+            itemNoteContent.setTypeface(itemNoteContent.getTypeface(), Typeface.ITALIC);
+        }
         itemNoteName.setText(noteName);
         itemFileNameText.setText(fileName);
     }
@@ -52,10 +59,9 @@ public class NoteAdapter extends CursorAdapter {
     }
 
 
-    private void openNote(String fileName, Context context, TextView itemNoteContent) {
+    private void openNote(String fileName,  Context context, TextView itemNoteContent) {
         try {
             InputStream inputStream = context.openFileInput(fileName + "." + FILE_EXTENSION);
-
             if (inputStream != null) {
                 InputStreamReader isr = new InputStreamReader(inputStream);
                 BufferedReader reader = new BufferedReader(isr);
@@ -69,8 +75,7 @@ public class NoteAdapter extends CursorAdapter {
                 inputStream.close();
                 itemNoteContent.setText(builder.toString() + "\n");
             }
-        } catch (Throwable t) {
-            // Don`t do anything
         }
+        catch(Exception e) {}
     }
 }

@@ -38,4 +38,21 @@
             android:hint="Content"
             android:textColor="@android:color/white"
             android:textColorHint="@android:color/darker_gray" />
+
+        <CheckBox
+            android:text="Encryption"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/encryptionBox"
+            android:textColor="@android:color/darker_gray" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textNoSuggestions"
+            android:ems="10"
+            android:id="@+id/passwordText"
+            android:textColor="@android:color/darker_gray"
+            android:hint="Password"
+            android:textColorHint="@android:color/darker_gray" />
 </LinearLayout>

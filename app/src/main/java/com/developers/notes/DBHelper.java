@@ -15,6 +15,7 @@ public class DBHelper extends SQLiteOpenHelper implements BaseColumns{
     public static final String DB_NAME = "NOTES";
     public static final String NOTE_NAME_COLUMN = "NOTE_NAME";
     public static final String FILE_NAME_COLUMN = "FILE_NAME";
+    public static final String ENCRYPTION_COLUMN = "ENCRYPTION";
     public DBHelper(Context context) {
         super(context, DB_NAME, null, 1);
     }
@@ -25,7 +26,7 @@ public class DBHelper extends SQLiteOpenHelper implements BaseColumns{
         db.execSQL("create table " + TABLE_NAME + " ("
                 + "_id integer primary key autoincrement,"
                 + FILE_NAME_COLUMN + " text,"
-                + NOTE_NAME_COLUMN + " text);");
+                + NOTE_NAME_COLUMN + " text, " + ENCRYPTION_COLUMN + " text);");
     }
 
     @Override
